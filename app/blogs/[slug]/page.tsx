@@ -1,3 +1,4 @@
+import DislikeButton from '@/app/ui/DislikeButton';
 import React from 'react'
 
 const BlogsSlugPage = async ({ params }: {
@@ -7,6 +8,7 @@ const BlogsSlugPage = async ({ params }: {
     return (
         <div>
             BlogsSlugPage:{slug}
+            <DislikeButton blogSlug={slug} />
         </div>
     )
 }
