@@ -1,13 +1,17 @@
 import "./globals.css";
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html
       lang="en"
-      className={`h-full antialiased`}
+      className="h-full antialiased"
     >
       <body className="min-h-full flex flex-col">
-        Navbar{children}
+        {children}
       </body>
     </html>
   );
