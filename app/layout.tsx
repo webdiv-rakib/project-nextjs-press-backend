@@ -17,6 +17,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         {/* navbar will be added soon */}
+        {/* will start from here */}
         {/* Navbar */}
         {children}
         {/* Footer */}
