@@ -63,13 +63,13 @@ export function NavBar() {
                     </div>
 
                     <div className="flex items-center gap-2">
-                        <button
+                        {/* <button
                             type="button"
                             aria-label="Notifications"
                             className="hidden rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground sm:inline-flex"
                         >
                             <Bell aria-hidden="true" />
-                        </button>
+                        </button> */}
 
                         <DropdownMenu>
                             <DropdownMenuTrigger className="flex items-center gap-2 rounded-md p-1.5 pr-2 text-left outline-none transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring">
