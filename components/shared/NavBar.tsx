@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import {
-    Bell,
+    // Bell,
     ChevronsUpDown,
     CreditCard,
     LogOut,
@@ -33,7 +33,35 @@ const userMenuItems = [
     { label: 'Settings', icon: Settings },
 ]
 
-export function NavBar() {
+type IUser = {
+    success: boolean,
+    message: string,
+    data: {
+        profile: {
+            id: string,
+            name: string,
+            email: string,
+            activeStatus: string,
+            role: string,
+            createdAt: string,
+            updatedAt: string,
+            profile: {
+                id: string,
+                profilePhoto: string,
+                bio: string | null,
+                userId: string,
+                createdAt: string,
+                updatedAt: string
+            }
+        }
+    }
+}
+
+type NavbarProps = {
+    user: IUser
+}
+
+export function NavBar({ user }: NavbarProps) {
     return (
         <main className="bg-muted/30">
             <header className="border-b bg-background">
@@ -78,15 +106,15 @@ export function NavBar() {
                                         JD
                                     </AvatarFallback>
                                 </Avatar>
-                                <span className="hidden text-sm font-medium sm:block">Jordan Davis</span>
+                                <span className="hidden text-sm font-medium sm:block">{user.data?.profile.name || 'Login'}</span>
                                 <ChevronsUpDown aria-hidden="true" className="hidden text-muted-foreground sm:block" />
                                 <span className="sr-only">Open user menu</span>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-56">
                                 <DropdownMenuGroup>
                                     <DropdownMenuLabel>
-                                        <p>Jordan Davis</p>
-                                        <p className="font-normal text-muted-foreground">jordan@example.com</p>
+                                        <p>{user.data?.profile.name || 'User'}</p>
+                                        <p className="font-normal text-muted-foreground">{user.data?.profile.email || 'user@example.com'}</p>
                                     </DropdownMenuLabel>
                                     <DropdownMenuSeparator />
                                     {userMenuItems.map((item) => {
