@@ -21,7 +21,6 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { logout } from '@/service/logout'
 import { toast } from 'sonner'
-import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '../ui/button'
 
@@ -68,22 +67,14 @@ type NavbarProps = {
 }
 
 export function NavBar({ user }: NavbarProps) {
-    const [isLogout, setIsLogout] = useState(false);
     const router = useRouter();
     const handleUserMenuAction = async (action: string) => {
         if (action === 'logout') {
             await logout();
-            // toast.success("User Logged Out Successfully!");
-            // router.push("/login");
-            setIsLogout(true);
-        }
-    }
-    useEffect(() => {
-        if (isLogout) {
             toast.success("User Logged Out Successfully!");
             router.push("/login");
         }
-    }, [isLogout, router])
+    }
     return (
         <main className="bg-muted/30">
             <header className="border-b bg-background">
