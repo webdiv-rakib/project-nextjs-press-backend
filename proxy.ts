@@ -2,7 +2,9 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 // import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-const AUTH_ROUTES = ['/login', '/register']
+const AUTH_ROUTES = ['/login', '/register'];
+// const PUBLIC_ROUTES = ["/", '/login', '/register', '/news'];
+const PUBLIC_ROUTES = ["/", '/news'];
 
 // This function can be marked `async` if using `await` inside
 export async function proxy(request: NextRequest) {
@@ -38,6 +40,12 @@ export async function proxy(request: NextRequest) {
         }
     }
 
+    const isPublic = PUBLIC_ROUTES.some((route) => pathname === route || pathname.startsWith(route + '/'));
+    const isAuthRoute = AUTH_ROUTES.some((route) => pathname === route || pathname.startsWith(route + '/'));
+    // Authenticated Pages Protection
+    if (!accessToken && !isPublic && !isAuthRoute) {
+        return NextResponse.redirect(new URL('/login', request.url))
+    }
     // return NextResponse.redirect(new URL('/', request.url))
     return NextResponse.next();
 }
