@@ -1,3 +1,4 @@
+'use client'
 import Link from 'next/link'
 import {
     // Bell,
@@ -18,13 +19,18 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { logout } from '@/service/logout'
+import { toast } from 'sonner'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { Button } from '../ui/button'
 
 const navItems = [
     { label: 'Home', href: '/' },
     { label: 'Overview', href: '#overview' },
     { label: 'Projects', href: '#projects' },
     { label: 'Activity', href: '#activity' },
-    { label: 'Login', href: '/login' },
+    // { label: 'Login', href: '/login' },
 ]
 
 const userMenuItems = [
@@ -62,6 +68,22 @@ type NavbarProps = {
 }
 
 export function NavBar({ user }: NavbarProps) {
+    const [isLogout, setIsLogout] = useState(false);
+    const router = useRouter();
+    const handleUserMenuAction = async (action: string) => {
+        if (action === 'logout') {
+            await logout();
+            // toast.success("User Logged Out Successfully!");
+            // router.push("/login");
+            setIsLogout(true);
+        }
+    }
+    useEffect(() => {
+        if (isLogout) {
+            toast.success("User Logged Out Successfully!");
+            router.push("/login");
+        }
+    }, [isLogout, router])
     return (
         <main className="bg-muted/30">
             <header className="border-b bg-background">
@@ -99,41 +121,51 @@ export function NavBar({ user }: NavbarProps) {
                             <Bell aria-hidden="true" />
                         </button> */}
 
-                        <DropdownMenu>
-                            <DropdownMenuTrigger className="flex items-center gap-2 rounded-md p-1.5 pr-2 text-left outline-none transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring">
-                                <Avatar className="size-8">
-                                    <AvatarFallback className="bg-primary text-xs text-primary-foreground">
-                                        JD
-                                    </AvatarFallback>
-                                </Avatar>
-                                <span className="hidden text-sm font-medium sm:block">{user.data?.profile.name || 'Login'}</span>
-                                <ChevronsUpDown aria-hidden="true" className="hidden text-muted-foreground sm:block" />
-                                <span className="sr-only">Open user menu</span>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-56">
-                                <DropdownMenuGroup>
-                                    <DropdownMenuLabel>
-                                        <p>{user.data?.profile.name || 'User'}</p>
-                                        <p className="font-normal text-muted-foreground">{user.data?.profile.email || 'user@example.com'}</p>
-                                    </DropdownMenuLabel>
-                                    <DropdownMenuSeparator />
-                                    {userMenuItems.map((item) => {
-                                        const Icon = item.icon
-                                        return (
-                                            <DropdownMenuItem key={item.label}>
-                                                <Icon aria-hidden="true" />
-                                                {item.label}
-                                            </DropdownMenuItem>
-                                        )
-                                    })}
-                                </DropdownMenuGroup>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem>
-                                    <LogOut aria-hidden="true" />
-                                    Log out
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                        {
+                            user.success ? (
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger className="flex items-center gap-2 rounded-md p-1.5 pr-2 text-left outline-none transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring">
+                                        <Avatar className="size-8">
+                                            <AvatarFallback className="bg-primary text-xs text-primary-foreground">
+                                                JD
+                                            </AvatarFallback>
+                                        </Avatar>
+                                        <span className="hidden text-sm font-medium sm:block">{user.data?.profile.name || 'Login'}</span>
+                                        <ChevronsUpDown aria-hidden="true" className="hidden text-muted-foreground sm:block" />
+                                        <span className="sr-only">Open user menu</span>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end" className="w-56">
+                                        <DropdownMenuGroup>
+                                            <DropdownMenuLabel>
+                                                <p>{user.data?.profile.name || 'User'}</p>
+                                                <p className="font-normal text-muted-foreground">{user.data?.profile.email || 'user@example.com'}</p>
+                                            </DropdownMenuLabel>
+                                            <DropdownMenuSeparator />
+                                            {userMenuItems.map((item) => {
+                                                const Icon = item.icon
+                                                return (
+                                                    <DropdownMenuItem key={item.label}>
+                                                        <Icon aria-hidden="true" />
+                                                        {item.label}
+                                                    </DropdownMenuItem>
+                                                )
+                                            })}
+                                        </DropdownMenuGroup>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem onClick={async () => {
+                                            await handleUserMenuAction("logout");
+                                        }}>
+                                            <LogOut aria-hidden="true" />
+                                            Log out
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            ) : <Link href="/login">
+                                <Button variant="outline" size="sm">
+                                    Log in
+                                </Button>
+                            </Link>
+                        }
                     </div>
                 </nav>
             </header>

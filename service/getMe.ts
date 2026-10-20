@@ -15,10 +15,15 @@ export const getMe = async () => {
     const res = await fetch(`${process.env.BACKEND_API_URL}/api/users/me`, {
         headers: {
             // Authorization : accessToken as unknown as string,
-            Authorization: `${accessToken}`,
+            // Authorization: `${accessToken}`,
             // Authorization: `Bearer ${accessToken}`,
 
-            // Cookie: `accessToken=${accessToken}`
+            Cookie: `accessToken=${accessToken}`
+        },
+        cache: "force-cache",
+        next: {
+            revalidate: 60 * 60 * 24,
+            tags: ["my-profile"]
         }
     });
 
