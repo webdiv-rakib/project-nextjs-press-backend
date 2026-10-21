@@ -29,7 +29,8 @@ const navItems = [
     { label: 'Overview', href: '#overview' },
     { label: 'Projects', href: '#projects' },
     { label: 'Activity', href: '#activity' },
-    // { label: 'Login', href: '/login' },
+    { label: 'News', href: '/news' },
+    { label: 'Premium', href: '/premium' },
 ]
 
 const userMenuItems = [
