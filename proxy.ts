@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { jwtUtils } from './utils/jwt';
+import { getNewAccessToken } from './service/refreshToken';
 const AUTH_ROUTES = ['/login', '/register'];
 // const PUBLIC_ROUTES = ["/", '/login', '/register', '/news'];
 const PUBLIC_ROUTES = ["/", '/news'];
@@ -17,19 +18,37 @@ export async function proxy(request: NextRequest) {
     // const accessToken = cookieStore.get("accessToken");
 
     // 2.
-    const accessToken = request.cookies.get("accessToken")?.value;
+    let accessToken = request.cookies.get("accessToken")?.value;
+    const refreshToken = request.cookies.get('refreshToken')?.value;
 
-    const decodedToken = accessToken ? jwtUtils.verifyToken(accessToken, process.env.JWT_ACCESS_SECRET as string) : null;
+    let decodedAccessToken = accessToken ? jwtUtils.verifyToken(accessToken, process.env.JWT_ACCESS_SECRET as string) : null;
 
-    let userRole = null;
-    if (!decodedToken?.success) {
-        // token has expired or invalid, delete the accessToken cookie and redirect to login page
-        cookieStore.delete('accessToken');
-        return NextResponse.redirect(new URL('/login', request.url))
+    const decodedRefreshToken = refreshToken ? jwtUtils.verifyToken(refreshToken, process.env.JWT_REFRESH_SECRET as string) : null;
+
+    if (!decodedAccessToken?.success && decodedRefreshToken?.success) {
+        const result = await getNewAccessToken();
+        if (result.success) {
+            const newAccessToken = result.data.accessToken;
+            cookieStore.set('accessToken', newAccessToken, {
+                httpOnly: true,
+                maxAge: 60 * 60 * 24,
+                sameSite: 'lax'
+            });
+            accessToken = newAccessToken;
+            decodedAccessToken = jwtUtils.verifyToken(accessToken!, process.env.JWT_ACCESS_SECRET as string);
+        }
     }
 
-    if (decodedToken?.success && decodedToken.data) {
-        userRole = (decodedToken.data as JwtPayload).role;
+
+    let userRole = null;
+    if (!decodedAccessToken?.success) {
+        // token has expired or invalid, delete the accessToken cookie and redirect to login page
+        cookieStore.delete('accessToken');
+        // return NextResponse.redirect(new URL('/login', request.url));
+    }
+
+    if (decodedAccessToken?.success && decodedAccessToken.data) {
+        userRole = (decodedAccessToken.data as JwtPayload).role;
     }
     // user is logged in and trying to access login or register page, redirect to dashboard or root home page
     if (accessToken && AUTH_ROUTES.includes(pathname)) {
