@@ -2,8 +2,13 @@ import { IPost } from "@/lib/types";
 import { NewsCard } from "./NewsCard";
 import { getPremiumNews } from "../../_actions/getPremiumNews";
 
-export async function PremiumNewsList() {
-    const result = await getPremiumNews();
+export async function PremiumNewsList({
+    searchParams,
+}: {
+    searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+    const search = await searchParams;
+    const result = await getPremiumNews({ search });
     if (!result.success || !result.data?.length) {
         return (
             <p className="py-12 text-center text-muted-foreground">
