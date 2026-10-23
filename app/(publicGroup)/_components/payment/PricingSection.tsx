@@ -39,8 +39,8 @@ export async function PricingSection() {
                         Support independent journalism
                     </li>
                 </ul>
-                {/* {!isActive && <SubscribeButton />} */}
-                {<SubscribeButton />}
+                {!isActive && <SubscribeButton />}
+                {/* {<SubscribeButton />} */}
             </CardContent>
         </Card>
     );
