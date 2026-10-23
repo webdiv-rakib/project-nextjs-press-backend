@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { NewsSkeleton } from "../_components/news/NewsSkeleton";
 import { PremiumNewsList } from "../_components/news/PremiumNewsList";
+import { NewsSearchBar } from "../_components/news/NewsSearchBar";
 
 const PremiumPage = async ({
     searchParams,
@@ -19,7 +20,7 @@ const PremiumPage = async ({
                     </p>
                 </div>
 
-                {/* <NewsSearchBar /> */}
+                <NewsSearchBar />
             </div>
 
             <Suspense fallback={<NewsSkeleton />}>
