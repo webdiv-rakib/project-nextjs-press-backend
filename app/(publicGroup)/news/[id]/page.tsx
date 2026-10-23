@@ -1,9 +1,14 @@
 import React from 'react'
 
-const NewsByIdPage = () => {
+const NewsByIdPage = async ({
+    params,
+}: {
+    params: Promise<{ id: string }>
+}) => {
+    const { id } = await params
     return (
         <div>
-            NewsByIdPage
+            NewsByIdPage{id}
         </div>
     )
 }
