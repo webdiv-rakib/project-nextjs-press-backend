@@ -2,8 +2,14 @@
 
 import { cookies } from "next/headers";
 
-export const getPremiumNews = async ({ search }: { search?: { [key: string]: string | string[] | undefined } }) => {
-    const searchTerm = `${search?.searchTerm ? `?searchTerm=${search.searchTerm}` : ""}`
+export const getPremiumNews = async ({ query }: { query?: { [key: string]: string | string[] | undefined } }) => {
+    // const searchTerm = `${search?.searchTerm ? `?searchTerm=${search.searchTerm}` : ""}`
+    const params = new URLSearchParams();
+    if (query && query.searchTerm) {
+        params.set("searchTerm", query.searchTerm as string)
+    }
+
+
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("accessToken")?.value;
     if (!accessToken) {
@@ -13,7 +19,9 @@ export const getPremiumNews = async ({ search }: { search?: { [key: string]: str
             message: "User Not Logged In"
         }
     }
-    const res = await fetch(`${process.env.BACKEND_API_URL}/api/premium${searchTerm}`, {
+
+
+    const res = await fetch(`${process.env.BACKEND_API_URL}/api/premium?${params.toString()}`, {
         headers: {
             // Authorization : accessToken as unknown as string,
             // Authorization: `${accessToken}`,

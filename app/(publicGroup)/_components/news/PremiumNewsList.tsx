@@ -7,8 +7,8 @@ export async function PremiumNewsList({
 }: {
     searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
-    const search = await searchParams;
-    const result = await getPremiumNews({ search });
+    const query = await searchParams;
+    const result = await getPremiumNews({ query });
     if (!result.success || !result.data?.length) {
         return (
             <p className="py-12 text-center text-muted-foreground">
