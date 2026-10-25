@@ -10,6 +10,7 @@ const PaymentPage = () => {
                 <h1 className="text-2xl font-semibold">Go Premium</h1>
                 <p className="text-sm text-muted-foreground">
                     Subscribe to unlock premium news content.
+                    {/* just a comment added. */}
                 </p>
             </div>
 
