@@ -39,13 +39,13 @@ export const getMyPosts = async () => {
 }
 
 export const createPost = async (prevState: PostState, formData: FormData) => {
-    console.log({
-        title: formData.get('title'),
-        content: formData.get('content'),
-        thumbnail: formData.get('thumbnail'),
-        tags: (formData.get('tags') as string).split(', '),
-        isPremium: formData.get('isPremium') === 'on'
-    });
+    // console.log({
+    //     title: formData.get('title'),
+    //     content: formData.get('content'),
+    //     thumbnail: formData.get('thumbnail'),
+    //     tags: (formData.get('tags') as string).split(', '),
+    //     isPremium: formData.get('isPremium') === 'on'
+    // });
     const payload = {
         title: formData.get('title'),
         content: formData.get('content'),
@@ -77,13 +77,75 @@ export const createPost = async (prevState: PostState, formData: FormData) => {
     const result = await res.json();
     // console.log(result)
     if (result.success) {
-        revalidateTag('my-posts', 'max')
+        revalidateTag('my-posts', {
+            expire: 0
+        })
     }
     if (result.success && result.data.isPremium) {
-        revalidateTag('premium-posts', 'max')
+        revalidateTag('premium-posts', {
+            expire: 0
+        })
     }
     else {
-        revalidateTag('public-posts', 'max')
+        revalidateTag('public-posts', {
+            expire: 0
+        })
+    }
+    return result
+}
+
+export const updatePost = async (postId: string, prevState: PostState, formData: FormData) => {
+    // console.log({
+    //     title: formData.get('title'),
+    //     content: formData.get('content'),
+    //     thumbnail: formData.get('thumbnail'),
+    //     tags: (formData.get('tags') as string).split(', '),
+    //     isPremium: formData.get('isPremium') === 'on'
+    // });
+    const payload = {
+        title: formData.get('title') ?? '',
+        content: formData.get('content') ?? '',
+        thumbnail: formData.get('thumbnail') ?? '',
+        tags: (formData.get('tags') as string).split(', ') ?? '',
+        isPremium: formData.get('isPremium') === 'on'
+    }
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get("accessToken")?.value;
+    if (!accessToken) {
+        // throw new Error("User Not Logged In")
+        return {
+            sucsess: false,
+            message: "User Not Logged In"
+        }
+    }
+    const res = await fetch(`${process.env.BACKEND_API_URL}/api/posts/${postId}`, {
+        method: 'PATCH',
+        headers: {
+            // Authorization : accessToken as unknown as string,
+            // Authorization: `${accessToken}`,
+            // Authorization: `Bearer ${accessToken}`,
+
+            Cookie: `accessToken=${accessToken}`,
+            "Content-type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    });
+    const result = await res.json();
+    // console.log(result)
+    if (result.success) {
+        revalidateTag('my-posts', {
+            expire: 0
+        })
+    }
+    if (result.success && result.data.isPremium) {
+        revalidateTag('premium-posts', {
+            expire: 0
+        })
+    }
+    else {
+        revalidateTag('public-posts', {
+            expire: 0
+        })
     }
     return result
 }
