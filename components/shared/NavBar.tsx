@@ -24,6 +24,7 @@ import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { Button } from '../ui/button'
 import { NavbarProps } from '@/lib/types'
+import { LayoutDashboard } from 'lucide-react'
 
 const navItems = [
     { label: 'Home', href: '/' },
@@ -36,6 +37,7 @@ const navItems = [
 
 const userMenuItems = [
     { label: 'Profile', icon: User },
+    { label: 'Dashboard', icon: LayoutDashboard, action: "dashboard" },
     { label: 'Billing', icon: CreditCard },
     { label: 'Settings', icon: Settings },
 ]
@@ -44,6 +46,19 @@ const userMenuItems = [
 export function NavBar({ user }: NavbarProps) {
     const router = useRouter();
     const handleUserMenuAction = async (action: string) => {
+        if (action === 'dashboard') {
+            if (user.data.profile.role === "USER") {
+                router.push('/dashboard')
+            }
+            else if (user.data.profile.role === "AUTHOR") {
+                router.push('/author-dashboard')
+            }
+            else if (user.data.profile.role === "ADMIN") {
+                router.push('/admin-dashboard')
+            }
+            return;
+        }
+
         if (action === 'logout') {
             await logout();
             toast.success("User Logged Out Successfully!");
@@ -110,7 +125,7 @@ export function NavBar({ user }: NavbarProps) {
                                             {userMenuItems.map((item) => {
                                                 const Icon = item.icon
                                                 return (
-                                                    <DropdownMenuItem key={item.label}>
+                                                    <DropdownMenuItem key={item.label} onSelect={() => handleUserMenuAction(item.action || item.label.toLowerCase())}>
                                                         <Icon aria-hidden="true" />
                                                         {item.label}
                                                     </DropdownMenuItem>
