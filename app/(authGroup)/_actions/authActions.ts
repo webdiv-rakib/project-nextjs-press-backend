@@ -25,7 +25,12 @@ export const loginAction = async (prevState: LoginState, formData: FormData) => 
         password
     }
 
-    const res = await fetch(`${process.env.BACKEND_API_URL}/api/auth/login`, { method: "POST", headers: { "Content-type": "application/json" }, body: JSON.stringify(payload) });
+    const res = await fetch(`${process.env.BACKEND_API_URL}/api/auth/login`,
+        {
+            method: "POST",
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify(payload)
+        });
 
     const result = await res.json();
 
