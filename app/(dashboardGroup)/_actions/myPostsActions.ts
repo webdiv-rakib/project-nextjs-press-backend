@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use server'
-import { getNewAccessToken, isAccessTokenExist } from "@/service/refreshToken";
-import { jwtUtils } from "@/utils/jwt";
+import { isAccessTokenExist } from "@/service/refreshToken";
 import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 
