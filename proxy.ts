@@ -71,7 +71,9 @@ export async function proxy(request: NextRequest) {
     const isAuthRoute = AUTH_ROUTES.some((route) => pathname === route || pathname.startsWith(route + '/'));
     // Authenticated Pages Protection: Authorization is not handled yet
     if (!accessToken && !isPublic && !isAuthRoute) {
-        return NextResponse.redirect(new URL('/login', request.url))
+        const loginUrl = new URL('/login', request.url);
+        loginUrl.searchParams.set("redirectTo", pathname)
+        return NextResponse.redirect(loginUrl)
     };
 
 
