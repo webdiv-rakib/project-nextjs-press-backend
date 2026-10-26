@@ -11,7 +11,7 @@ const DashboardGroupLayout = async ({ children }: { children: React.ReactNode })
             <NavBar user={user} />
             <SidebarProvider>
                 <div className="flex flex-1">
-                    <DashboardSidebar />
+                    <DashboardSidebar user={user} />
                     <main className="flex-1 min-w-0">{children}</main>
                 </div>
             </SidebarProvider>
